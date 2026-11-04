@@ -1,0 +1,36 @@
+name: Source tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      IGL_NUM_THREADS: "2"
+      CMAKE_BUILD_PARALLEL_LEVEL: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install and build
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install '.[test]'
+          tools/build_cgal.sh python "" 2
+      - name: Run synthetic and tool tests
+        run: python -m pytest -q tests
+      - name: Build source distribution
+        run: |
+          python -m pip install build
+          python -m build --sdist

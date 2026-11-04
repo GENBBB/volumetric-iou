@@ -1,0 +1,33 @@
+[build-system]
+requires = ["scikit-build-core>=0.10", "nanobind>=2.4"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "volumetric-iou"
+version = "0.24.0"
+description = "Volumetric IoU for triangle meshes with validation and explicit failure statuses"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.12"  # one cp312-abi3 wheel: nanobind's stable ABI needs 3.12
+# networkx: trimesh's split() (repair) and fix_normals() import it
+dependencies = ["numpy", "scipy", "trimesh>=4.12", "manifold3d", "networkx"]
+
+[project.urls]
+Repository = "https://github.com/GENBBB/volumetric-iou"
+Issues = "https://github.com/GENBBB/volumetric-iou/issues"
+
+[project.optional-dependencies]
+# libigl: the reference the module is checked against (tests skip without it, tools/)
+test = ["pytest", "libigl==2.6.3", "shapely"]
+
+[tool.scikit-build]
+minimum-version = "build-system.requires"
+wheel.py-api = "cp312"
+wheel.packages = ["src/volumetric_iou"]
+build-dir = "build/{wheel_tag}"
+sdist.include = ["cpp/", "CMakeLists.txt", "LICENSE", "LICENSES/", "THIRD_PARTY_NOTICES.md", "README.md", "docs/", "tests/", "tools/", "CHANGELOG.md", "CONTRIBUTING.md"]
+wheel.license-files = ["LICENSE", "LICENSES/*", "THIRD_PARTY_NOTICES.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
