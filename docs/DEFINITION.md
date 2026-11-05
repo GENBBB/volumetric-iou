@@ -6,7 +6,7 @@ requirements, the rules for constructing bodies, and the conditions under which
 the package returns a result or a failure. Accuracy guarantees, limitations,
 and diagnostics are described separately.
 
-This document describes version 0.24.0. Installation and the
+This document describes version 0.24.1. Installation and the
 API are described in the [README](../README.md); measurements on real data—agreement
 with the arbiter, case frequencies, and runtime—are in [REPORT.md](REPORT.md).
 
@@ -1497,12 +1497,15 @@ coordinates are exactly equal, without grid merging; faces with coincident
 vertices are removed, while duplicate faces are retained. The ordinary
 path's removal of small shells ([4.5](#section-4-5)) does not carry over to raw
 input: every interpretation retains all its faces, including those of a shell
-discarded by preliminary cleanup. If there are no boundary edges, the input
-itself is used unchanged.
+discarded by preliminary cleanup. If this surface has boundary edges, **the
+raw-input path itself attempts to patch its holes** before constructing the
+solid (item 1 below). Patches made while preparing the cleaned mesh are not
+carried over. Without boundary edges, no patches are added.
 
 **When the package uses raw input.** There are three reasons for this
-transition. They are the same for `"exact"` and `"fail"`, but differ in whether
-the package first attempts to close holes:
+transition. They are the same for `"exact"` and `"fail"`. All three first
+make a separate attempt to patch holes in the **raw surface**. They differ
+in the outcome if edges remain unbalanced afterward:
 
 | reason for the transition | attempt to patch holes in raw input | what happens with unbalanced edges |
 |---|---|---|
@@ -1521,11 +1524,20 @@ one interpretation does not eliminate ambiguity in the original record. The
 ordinary repair of an entirely inverted shell is retained; this does not mean
 that any negative interpretation of a raw assembly may be arbitrarily flipped.
 
-**How the body is built.**
+**How the solid is built on the raw-input path.**
 
-1. **Close holes.** All three rows of the table apply patching rule
-   [4.3](#section-4-3), including its error bound. A crack counts as a hole,
-   not a wall. If a patch is rejected, the first two transitions return
+1. **Prepare raw input and patch its holes.** The package returns to the
+   original faces rather than continuing with the cleaned mesh. Vertices
+   are merged by exact coordinate equality and duplicate faces are retained;
+   boundary loops and new patches are then constructed on this surface.
+   The same rule [4.3](#section-4-3), including its proven error bound, applies,
+   but loops and patches are computed anew for raw input. Holes whose vertices
+   grid cleanup merged into a branching boundary may therefore become
+   separate loops here and admit patches. Accepted patches are added to the
+   raw faces: **edge balance, the exact arrangement, and subsequent readings
+   are checked with these patches included**. Without boundary edges this
+   step adds nothing. A crack counts as a hole, not a wall.
+   If a patch is rejected, the first two transitions return
    `open_surface`, while the fallback path retains the original failure. In
    particular, a hole in the same component as a wall is not closed: the wall
    retains edges with an odd number of faces, so the patch does not close the
@@ -1537,6 +1549,15 @@ that any negative interpretation of a raw assembly may be arbitrarily flipped.
    Every face retains its direction and multiplicity. The union of all faces
    connected by at least one shared edge is not assumed to be the only
    possible body.
+
+   **Correct an entirely negative orientation before resolving readings.**
+   The exact arrangement provides the total w of the raw surface including
+   accepted patches. If nonzero-volume cells contain a negative value and
+   no positive value, every face is reversed and construction restarts from
+   the exact arrangement. This corrects the entire input, rather than
+   individual invalid readings. All ambiguity, pocket, and self-overlap
+   checks still apply afterward; the certificates below use the corrected
+   orientation.
 
    An **interpretation** consists of the selected connections and owners of
    negative shells. For every resulting shell, its per-cell winding number
@@ -1710,7 +1731,8 @@ mixed case ambiguous, rather than a pocket or self-overlap failure.
   this graph may overlap without an individual-body defect. Filling is
   performed on this same proven material. This proves all interpretations
   rather than selecting one alternative.
-- **Certificate of a mandatory pocket.** If the sum of w is negative in a
+- **Certificate of a mandatory pocket.** After the correction of an entirely
+  negative orientation described above, if the sum of w is negative in a
   volumetric cell, a pocket occurs there under every ownership hierarchy: in
   the absence of negative fields, the union of children is no greater than
   their sum, and induction would give a nonnegative root field no greater
@@ -1742,6 +1764,8 @@ mixed case ambiguous, rather than a pocket or self-overlap failure.
 
 **Diagnostics.**
 
+- Reversing the entire raw input is recorded as
+  `raw_solid.assembly.flipped_inverted_mesh: true` for an accepted solid.
 - On splitting failure in [4.4](#section-4-4), `nonmanifold_edges` and
   `split_open` are recorded; on failure due to raw-input holes in the first
   two transitions, `raw_holes` is recorded. If a patch is rejected on the
