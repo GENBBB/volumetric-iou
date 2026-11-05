@@ -50,10 +50,10 @@ not required by the metric.
 
 Prebuilt GMP/MPFR wheels are available in the
 [GitHub Releases](https://github.com/GENBBB/volumetric-iou/releases).
-For version 0.24.0 on Linux x86_64:
+For version 0.24.1 on Linux x86_64:
 
 ```bash
-python -m pip install https://github.com/GENBBB/volumetric-iou/releases/download/v0.24.0/volumetric_iou-0.24.0-cp312-abi3-manylinux_2_34_x86_64.whl
+python -m pip install https://github.com/GENBBB/volumetric-iou/releases/download/v0.24.1/volumetric_iou-0.24.1-cp312-abi3-manylinux_2_34_x86_64.whl
 ```
 
 The wheel target is `cp312-abi3-manylinux_2_34_x86_64`: CPython ≥ 3.12,

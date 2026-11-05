@@ -104,7 +104,7 @@ libraries when running many worker processes.
 
 ## Release validation
 
-The [v0.24.0 release](https://github.com/GENBBB/volumetric-iou/releases/tag/v0.24.0)
+The [v0.24.1 release](https://github.com/GENBBB/volumetric-iou/releases/tag/v0.24.1)
 includes a GMP/MPFR wheel for CPython ≥ 3.12, Linux x86_64 and glibc ≥ 2.34,
 along with `SHA256SUMS`, the tagged source archive, `build-public-wheel.sh`
 and `WHEEL-BUILD.md`. The build notes record dependency versions, source
