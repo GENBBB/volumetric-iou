@@ -48,15 +48,18 @@ NetworkX. Python `libigl` is optional and used only by reference tests;
 the production CGAL implementation is part of this package. `rtree` is
 not required by the metric.
 
-If a release provides a matching Linux wheel, install the downloaded file:
+Prebuilt GMP/MPFR wheels are available in the
+[GitHub Releases](https://github.com/GENBBB/volumetric-iou/releases).
+For version 0.24.0 on Linux x86_64:
 
 ```bash
-python -m pip install ./volumetric_iou-*.whl
+python -m pip install https://github.com/GENBBB/volumetric-iou/releases/download/v0.24.0/volumetric_iou-0.24.0-cp312-abi3-manylinux_2_34_x86_64.whl
 ```
 
-The existing wheel target is `cp312-abi3-manylinux_2_34_x86_64`: CPython ≥ 3.12,
-Linux x86_64 and glibc ≥ 2.34. A wheel with GMP/MPFR includes those runtime
-libraries. Public PyPI availability is not assumed by these instructions.
+The wheel target is `cp312-abi3-manylinux_2_34_x86_64`: CPython ≥ 3.12,
+Linux x86_64 and glibc ≥ 2.34. GMP/MPFR runtime libraries and their notices
+are included. Checksums, tagged source and the build recipe accompany the
+wheel in the release. These instructions install directly from GitHub Releases.
 
 ## Quick start
 
