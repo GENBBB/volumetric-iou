@@ -28,6 +28,12 @@ It remains under MPL-2.0; its modified source is included in this repository
 and source distributions. CMake checks the upstream file's MD5 before
 applying the replacement in the build directory.
 
+CMake also changes libigl's `default_num_threads.cpp` in that private
+build copy: the fallback CPU count is one instead of the machine's logical
+CPU count. Environment lookup and first-use caching are unchanged. The
+replacement is recorded in `CMakeLists.txt`; upstream source trees are
+not modified, and the original MPL-2.0 notice is retained.
+
 CGAL's `box_intersection_d.h`, used by the detector, explicitly declares
 `GPL-3.0-or-later OR LicenseRef-Commercial` in CGAL 6.0.1. This distribution
 uses the open-source licensing path. Changing the exact number backend from

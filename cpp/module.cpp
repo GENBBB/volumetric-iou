@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <string>
 
+#include <igl/default_num_threads.h>
 #include <igl/winding_number.h>
 
 #include "cells.h"
@@ -245,6 +246,9 @@ static nb::tuple cells(Vertices V, Faces F) {
 
 NB_MODULE(_cgal, m) {
   m.doc() = "CGAL path of volumetric_iou (exact predicates).";
+  m.def("default_num_threads", []() { return igl::default_num_threads(); },
+        "CGAL/libigl thread budget: positive IGL_NUM_THREADS, otherwise 1.\n"
+        "Read and cached on first use; querying this function also initializes it.");
   m.def("convex_interface", [](Vertices V, Faces F) {
     check_faces(V, F);
     nb::gil_scoped_release release;

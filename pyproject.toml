@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "volumetric-iou"
-version = "0.24.0"
+version = "0.24.1"
 description = "Volumetric IoU for triangle meshes with validation and explicit failure statuses"
 readme = "README.md"
 license = {file = "LICENSE"}

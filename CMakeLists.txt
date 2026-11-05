@@ -101,6 +101,20 @@ if(NOT _cf_md5 STREQUAL "f44cdb57c6874ef6ab00adf9794335e6")
 endif()
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cpp/libigl/closest_facet.cpp ${_cf} COPYONLY)
 
+# Keep libigl's lazy environment lookup/cache, but do not infer the machine's
+# CPU count when the caller has not selected IGL_NUM_THREADS. Patch only the
+# private build copy, leaving the supplied dependency source untouched.
+set(_nt ${VIOU_IGL_INCLUDE}/igl/default_num_threads.cpp)
+file(READ ${_nt} _nt_source)
+set(_nt_old "const unsigned int hw_num_threads = std::thread::hardware_concurrency();")
+string(FIND "${_nt_source}" "${_nt_old}" _nt_pos)
+if(_nt_pos EQUAL -1)
+  message(FATAL_ERROR "Unexpected libigl default_num_threads.cpp: thread-default patch cannot be applied")
+endif()
+string(REPLACE "${_nt_old}" "const unsigned int hw_num_threads = 1u; // volumetric-iou default"
+  _nt_source "${_nt_source}")
+file(WRITE ${_nt} "${_nt_source}")
+
 find_package(Python 3.12 COMPONENTS Interpreter Development.Module Development.SABIModule REQUIRED)
 execute_process(COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
   OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT)

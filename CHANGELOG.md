@@ -4,6 +4,14 @@ This public source release starts at **0.24.0**. Earlier version numbers in
 the validation report refer to development versions; they are not claims
 that earlier public packages or releases are available.
 
+## 0.24.1
+
+- Default CGAL/libigl and self-intersection detection to one thread when
+  `IGL_NUM_THREADS` is unset. Positive caller overrides remain supported;
+  the detector also retains its explicit per-call `threads` argument.
+- Preserve libigl's first-use environment lookup and cache without changing
+  the application's environment or unrelated native thread pools.
+
 ## 0.24.0
 
 - Validated volumetric IoU, IoG and IoP for triangle meshes, with

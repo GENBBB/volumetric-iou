@@ -95,6 +95,10 @@ must use the same frame and may extend outside the cube.
 
 ## Validation policy
 
+CGAL/libigl and the self-intersection detector use one thread by default.
+Set `IGL_NUM_THREADS` to a positive integer before the first metric call
+to select a different budget; see [native threads](docs/API.md#timeouts-and-native-threads).
+
 The default `on_self_intersection=("exact", "fail")` resolves GT self-overlap
 into its exact material and refuses a prediction whose individual body
 passes through itself. Overlap between different bodies is a union;

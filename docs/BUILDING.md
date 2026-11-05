@@ -95,8 +95,9 @@ The portable tools included here are:
 - `doc_figures.py --out docs/img`: regenerate the definition figures
   (requires the optional `matplotlib` package).
 
-Set `IGL_NUM_THREADS` before the first CGAL call or before starting worker
-pools. `dataset_check.py` supplies a default per-worker thread budget when
+CGAL/libigl and the detector default to one thread. Set a positive
+`IGL_NUM_THREADS` before the first CGAL call or before starting worker
+pools to override that default. `dataset_check.py` supplies a per-worker thread budget when
 the caller has not set one. The library itself does not change your thread
 environment. Set BLAS/OpenMP environment limits before importing their
 libraries when running many worker processes.

@@ -168,9 +168,22 @@ in a worker that has not computed geometry or prepared native bodies.
 There is no automatic cleanliness check; a copied busy thread pool may
 cause a false timeout. Timeout isolation is supported on Linux only.
 
-Set `IGL_NUM_THREADS` before the first CGAL call and before the first timed
-call. Coordinate process counts with CGAL and BLAS/OpenMP threads. The metric
-does not silently set a thread budget for the importing application.
+CGAL/libigl and the self-intersection detector default to **one thread**
+when `IGL_NUM_THREADS` is unset. Set a positive integer to override both:
+
+```bash
+IGL_NUM_THREADS=4 python your_script.py
+```
+
+Set it before the first CGAL call and before the first timed call: libigl
+caches the budget on first use, and the timeout server inherits its
+environment when it starts. The detector reads the variable on each call;
+`volumetric_iou.self_intersect.self_intersecting_pairs(mesh, threads=4)`
+also accepts a per-call override. Missing or invalid/nonpositive budgets
+fall back to one. The package does not modify `os.environ`.
+These defaults apply to the package's CGAL/libigl code and detector;
+NumPy/BLAS/OpenMP and manifold3d have their own threading settings.
+Coordinate those settings with the number of worker processes.
 
 ## Diagnostics and independent checks
 

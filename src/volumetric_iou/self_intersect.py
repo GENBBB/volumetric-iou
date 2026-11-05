@@ -28,10 +28,9 @@ from . import _cgal
 
 
 def detector_threads() -> int:
-    """IGL_NUM_THREADS if set (the knob libigl's mesh_boolean reads too), else
-    the CPUs this process may run on -- not the machine's core count."""
+    """Positive IGL_NUM_THREADS (also used by libigl), or one thread."""
     n = os.environ.get("IGL_NUM_THREADS", "")
-    return int(n) if n.isdigit() and int(n) > 0 else len(os.sched_getaffinity(0))
+    return int(n) if n.isdigit() and int(n) > 0 else 1
 
 
 def self_intersecting_pairs(mesh: trimesh.Trimesh, threads: int | None = None,
@@ -42,6 +41,8 @@ def self_intersecting_pairs(mesh: trimesh.Trimesh, threads: int | None = None,
     raised, not hidden: the caller decides what an unchecked mesh means.
     first: stop at the first pair and return it alone -- for a caller that
     only needs to know whether the surface is embedded.
+    threads: explicit per-call budget; None uses IGL_NUM_THREADS, defaulting
+    to one. Unlike libigl's budget, the detector reads the environment per call.
     """
     if len(mesh.faces) < 2:
         return np.empty((0, 2), dtype=np.int64)
