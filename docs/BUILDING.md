@@ -97,8 +97,8 @@ The portable tools included here are:
 
 CGAL/libigl and the detector default to one thread. Set a positive
 `IGL_NUM_THREADS` before the first CGAL call or before starting worker
-pools to override that default. `dataset_check.py` supplies a per-worker thread budget when
-the caller has not set one. The library itself does not change your thread
+pools to override that default. `dataset_check.py` uses the same one-thread
+default per worker unless the caller sets a budget. The library itself does not change your thread
 environment. Set BLAS/OpenMP environment limits before importing their
 libraries when running many worker processes.
 

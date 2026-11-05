@@ -1,6 +1,7 @@
 """Thread defaults, caller overrides and libigl's first-use cache."""
 import json
 import os
+from pathlib import Path
 import subprocess
 import sys
 
@@ -63,3 +64,15 @@ def test_detector_default_environment_and_per_call_override(monkeypatch):
     monkeypatch.setenv("IGL_NUM_THREADS", "bad")
     self_intersect.self_intersecting_pairs(mesh)
     assert budgets == [1, 4, 2, 1]
+
+
+def test_dataset_cli_keeps_one_thread_default_and_caller_override(monkeypatch):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+    try:
+        from pool_threads import igl_threads
+    finally:
+        sys.path.pop(0)
+    monkeypatch.delenv("IGL_NUM_THREADS", raising=False)
+    assert igl_threads(workers=1) == "1"
+    monkeypatch.setenv("IGL_NUM_THREADS", "4")
+    assert igl_threads(workers=8) == "4"
