@@ -8,9 +8,9 @@ instead of a misleading score.
 For ground-truth material $G$ and predicted material $P$:
 
 ```math
-\operatorname{IoU}=\frac{|G\cap P|}{|G\cup P|},\qquad
-\operatorname{IoG}=\frac{|G\cap P|}{|G|},\qquad
-\operatorname{IoP}=\frac{|G\cap P|}{|P|}.
+\mathrm{IoU}=\frac{|G\cap P|}{|G\cup P|},\qquad
+\mathrm{IoG}=\frac{|G\cap P|}{|G|},\qquad
+\mathrm{IoP}=\frac{|G\cap P|}{|P|}.
 ```
 
 Each body's material is defined by its signed winding number $w\geq1$;
